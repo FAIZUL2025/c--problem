@@ -1,0 +1,18 @@
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        String empId = sc.nextLine();
+        int hours = sc.nextInt();
+        int amountPerHour = sc.nextInt();
+
+        double salary = hours * amountPerHour;
+
+        System.out.println("Employee's ID = " + empId);
+        System.out.printf("Salary = Rs. %.2f", salary);
+
+        sc.close();
+    }
+}
