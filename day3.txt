@@ -1,0 +1,16 @@
+    package day3;
+public class typeconversion {
+    public static void main(String[] args ) {
+        String contactName = "sabarinathan";
+        System.out.println(contactName.toLowerCase());
+        Object obj1 = contactName;//upcasting
+        // since Object doesn't have upper case method
+        // System.out.println(onj1.toupperCase());
+        System.out.println(obj1);
+        obj1 = 12.5;// upcasting
+        System.out.println(obj1);
+        Object obj2 = false;
+        boolean data = (boolean) obj2;//downcasting
+        System.out.println(data);
+    }
+}
