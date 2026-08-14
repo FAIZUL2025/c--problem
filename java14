@@ -1,0 +1,49 @@
+public class Factorial {
+    public static void main(String[] args) {
+        int number = 5;
+        long factorial = 1;
+
+        System.out.println("Factorial Program");
+        System.out.println("-----------------");
+        System.out.println("Number: " + number);
+
+        if (number < 0) {
+            System.out.println("Factorial is not defined for negative numbers.");
+        } else {
+            for (int i = 1; i <= number; i++) {
+                factorial = factorial * i;
+            }
+
+            System.out.println("Factorial: " + factorial);
+        }
+
+        System.out.println("Program completed.");
+        System.out.println("Thank you!");
+
+        int a = 10;
+        int b = 20;
+        int sum = a + b;
+
+        System.out.println("Example calculation:");
+        System.out.println(a + " + " + b + " = " + sum);
+
+        if (sum > 20) {
+            System.out.println("The sum is greater than 20.");
+        } else {
+            System.out.println("The sum is 20 or less.");
+        }
+
+        for (int i = 1; i <= 5; i++) {
+            System.out.println("Count: " + i);
+        }
+
+        int x = 100;
+        int y = 50;
+        int difference = x - y;
+
+        System.out.println("Difference: " + difference);
+        System.out.println("Java is easy to learn.");
+        System.out.println("Practice makes you better.");
+        System.out.println("Keep coding!");
+    }
+}
