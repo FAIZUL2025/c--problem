@@ -1,0 +1,26 @@
+import java.util.*;
+
+class Solution {
+    public int[][] merge(int[][] intervals) {
+        
+        Arrays.sort(intervals, (r1, r2) -> r1[0] - r2[0]);
+        
+        List<int[]> temp = new ArrayList<>();
+        
+        int[] prev = intervals[0];
+        
+        for (int ind = 1; ind < intervals.length; ind++) {
+            
+            if (intervals[ind][0] <= prev[1]) {
+                prev[1] = Math.max(prev[1], intervals[ind][1]);
+            } else {
+                temp.add(prev);
+                prev = intervals[ind];
+            }
+        }
+        
+        temp.add(prev);
+        
+        return temp.toArray(new int[temp.size()][]);
+    }
+}
