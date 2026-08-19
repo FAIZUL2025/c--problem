@@ -1,0 +1,45 @@
+import java.util.*;
+
+class Solution {
+    public int maxNumberOfFamilies(int n, int[][] reservedSeats) {
+        // Store reserved seats as a bitmask for each affected row.
+        Map<Integer, Integer> reserved = new HashMap<>();
+
+        for (int[] seat : reservedSeats) {
+            int row = seat[0];
+            int col = seat[1];
+
+            // Use bit (col - 1) for the seat.
+            reserved.put(row, reserved.getOrDefault(row, 0) | (1 << (col - 1)));
+        }
+
+        int answer = (n - reserved.size()) * 2;
+
+        // Masks for the three possible blocks:
+        // 2-5, 4-7, 6-9
+        int left  = 0b000011110;   // seats 2,3,4,5
+        int middle = 0b00111100;   // seats 3? Let's use explicit mask below
+        int right = 0b0111100000;  // seats 6,7,8,9
+
+        // Correct masks:
+        left = (1 << 1) | (1 << 2) | (1 << 3) | (1 << 4);
+        middle = (1 << 3) | (1 << 4) | (1 << 5) | (1 << 6);
+        right = (1 << 5) | (1 << 6) | (1 << 7) | (1 << 8);
+
+        for (int mask : reserved.values()) {
+            boolean canLeft = (mask & left) == 0;
+            boolean canMiddle = (mask & middle) == 0;
+            boolean canRight = (mask & right) == 0;
+
+            if (canLeft && canRight) {
+                // Two groups can fit using 2-5 and 6-9.
+                answer += 2;
+            } else if (canLeft || canMiddle || canRight) {
+                // At least one group can fit.
+                answer += 1;
+            }
+        }
+
+        return answer;
+    }
+}
