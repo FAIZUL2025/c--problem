@@ -1,0 +1,91 @@
+class Solution {
+    public long findKthSmallest(int[] coins, int k) {
+        // Remove redundant denominations.
+        // If a coin is a multiple of another coin, its multiples
+        // are already completely covered by the smaller coin.
+        java.util.Arrays.sort(coins);
+
+        int[] filtered = new int[coins.length];
+        int n = 0;
+
+        for (int coin : coins) {
+            boolean redundant = false;
+
+            for (int i = 0; i < n; i++) {
+                if (coin % filtered[i] == 0) {
+                    redundant = true;
+                    break;
+                }
+            }
+
+            if (!redundant) {
+                filtered[n++] = coin;
+            }
+        }
+
+        long lo = 1;
+        long hi = (long) filtered[0] * k;
+
+        while (lo < hi) {
+            long mid = lo + (hi - lo) / 2;
+
+            if (count(mid, filtered, n) >= k) {
+                hi = mid;
+            } else {
+                lo = mid + 1;
+            }
+        }
+
+        return lo;
+    }
+
+    private long count(long x, int[] coins, int n) {
+        long result = 0;
+
+        // Inclusion-exclusion over all subsets.
+        for (int mask = 1; mask < (1 << n); mask++) {
+            long lcm = 1;
+            int bits = 0;
+            boolean overflow = false;
+
+            for (int i = 0; i < n; i++) {
+                if ((mask & (1 << i)) != 0) {
+                    bits++;
+
+                    long g = gcd(lcm, coins[i]);
+
+                    // lcm(a,b) = a/gcd(a,b) * b
+                    lcm = (lcm / g) * coins[i];
+
+                    if (lcm > x) {
+                        overflow = true;
+                        break;
+                    }
+                }
+            }
+
+            if (overflow) {
+                continue;
+            }
+
+            long multiples = x / lcm;
+
+            if ((bits & 1) == 1) {
+                result += multiples;
+            } else {
+                result -= multiples;
+            }
+        }
+
+        return result;
+    }
+
+    private long gcd(long a, long b) {
+        while (b != 0) {
+            long temp = a % b;
+            a = b;
+            b = temp;
+        }
+        return a;
+    }
+}
