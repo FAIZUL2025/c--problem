@@ -1,0 +1,163 @@
+class Solution {
+
+    public String lexPalindromicPermutation(String s, String target) {
+        int n = s.length();
+
+        // Count characters in s
+        int[] freq = new int[26];
+
+        for (char c : s.toCharArray()) {
+            freq[c - 'a']++;
+        }
+
+        // A palindrome can have at most one character
+        // with an odd frequency.
+        int odd = 0;
+        int middle = -1;
+
+        for (int i = 0; i < 26; i++) {
+            if ((freq[i] & 1) == 1) {
+                odd++;
+                middle = i;
+            }
+        }
+
+        if (odd > 1) {
+            return "";
+        }
+
+        int halfLen = n / 2;
+
+        // Characters available in the left half.
+        int[] counts = new int[26];
+
+        for (int i = 0; i < 26; i++) {
+            counts[i] = freq[i] / 2;
+        }
+
+        /*
+         * First check if target's first half can be used
+         * exactly.
+         */
+        int[] remaining = counts.clone();
+        boolean possible = true;
+
+        for (int i = 0; i < halfLen; i++) {
+            int c = target.charAt(i) - 'a';
+
+            if (remaining[c] == 0) {
+                possible = false;
+                break;
+            }
+
+            remaining[c]--;
+        }
+
+        /*
+         * If we can construct exactly target's first half,
+         * compare the resulting palindrome with target.
+         */
+        if (possible) {
+            char[] half = target.substring(0, halfLen).toCharArray();
+
+            String candidate = buildPalindrome(half, middle);
+
+            if (candidate.compareTo(target) > 0) {
+                return candidate;
+            }
+        }
+
+        /*
+         * Find the rightmost position where we can make
+         * the half larger than target's half.
+         *
+         * Searching right-to-left is important:
+         * changing a later character gives the smallest
+         * possible lexicographical increase.
+         */
+        for (int pos = halfLen - 1; pos >= 0; pos--) {
+
+            // Characters remaining after matching
+            // target[0 .. pos-1].
+            remaining = counts.clone();
+
+            boolean prefixPossible = true;
+
+            for (int j = 0; j < pos; j++) {
+                int c = target.charAt(j) - 'a';
+
+                if (remaining[c] == 0) {
+                    prefixPossible = false;
+                    break;
+                }
+
+                remaining[c]--;
+            }
+
+            if (!prefixPossible) {
+                continue;
+            }
+
+            int targetChar = target.charAt(pos) - 'a';
+
+            /*
+             * Try the smallest character greater than
+             * target[pos].
+             */
+            for (int c = targetChar + 1; c < 26; c++) {
+
+                if (remaining[c] == 0) {
+                    continue;
+                }
+
+                char[] half = new char[halfLen];
+
+                // Copy target prefix
+                for (int j = 0; j < pos; j++) {
+                    half[j] = target.charAt(j);
+                }
+
+                // Make this position larger
+                half[pos] = (char) ('a' + c);
+
+                // Remove chosen character
+                remaining[c]--;
+
+                // Fill the rest with smallest possible characters
+                int index = pos + 1;
+
+                for (int x = 0; x < 26; x++) {
+                    while (remaining[x] > 0) {
+                        half[index++] = (char) ('a' + x);
+                        remaining[x]--;
+                    }
+                }
+
+                return buildPalindrome(half, middle);
+            }
+        }
+
+        return "";
+    }
+
+    private String buildPalindrome(char[] half, int middle) {
+        StringBuilder sb = new StringBuilder();
+
+        // Left half
+        for (char c : half) {
+            sb.append(c);
+        }
+
+        // Middle character
+        if (middle != -1) {
+            sb.append((char) ('a' + middle));
+        }
+
+        // Right half
+        for (int i = half.length - 1; i >= 0; i--) {
+            sb.append(half[i]);
+        }
+
+        return sb.toString();
+    }
+}
